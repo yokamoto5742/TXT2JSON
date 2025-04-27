@@ -1,0 +1,135 @@
+import tkinter as tk
+from tkinter import scrolledtext, messagebox
+import pyperclip
+import re
+from io import StringIO
+from txt_parse import parse_medical_text
+import json
+
+
+class MedicalTextConverter:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("医療テキスト変換アプリ")
+        self.root.geometry("800x600")
+
+        # フレームの作成
+        self.frame_top = tk.Frame(root)
+        self.frame_top.pack(fill=tk.BOTH, expand=True)
+
+        # カルテ記載フレーム
+        self.frame_karte = tk.LabelFrame(self.frame_top, text="カルテ記載")
+        self.frame_karte.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        # テキスト入力エリア
+        self.text_input = scrolledtext.ScrolledText(self.frame_karte, height=10)
+        self.text_input.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        # JSON形式フレーム
+        self.frame_json = tk.LabelFrame(self.frame_top, text="JSON形式")
+        self.frame_json.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        # JSON出力エリア
+        self.text_output = scrolledtext.ScrolledText(self.frame_json, height=10)
+        self.text_output.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        # 行数と文字数の表示
+        self.frame_stats = tk.Frame(root)
+        self.frame_stats.pack(fill=tk.X)
+
+        self.stats_label = tk.Label(self.frame_stats, text="行数: 0  文字数: 0")
+        self.stats_label.pack(side=tk.LEFT, padx=5, pady=5)
+
+        # ボタンフレーム
+        self.frame_buttons = tk.Frame(root)
+        self.frame_buttons.pack(fill=tk.X, pady=10)
+
+        # JSON変換ボタン
+        self.convert_button = tk.Button(self.frame_buttons, text="JSON形式に変換",
+                                        command=self.convert_to_json, width=15, height=2)
+        self.convert_button.pack(side=tk.LEFT, padx=10)
+
+        # テキストクリアボタン
+        self.clear_button = tk.Button(self.frame_buttons, text="テキストクリア",
+                                      command=self.clear_text, width=15, height=2)
+        self.clear_button.pack(side=tk.LEFT, padx=10)
+
+        # クリップボードの監視設定
+        self.clipboard_content = ''
+        self.is_first_check = True
+        self.check_clipboard()
+
+        # テキスト変更イベントをバインド
+        self.text_input.bind("<KeyRelease>", self.update_stats)
+
+    def check_clipboard(self):
+        """クリップボードの内容を監視し、変更があれば取得して表示"""
+        try:
+            clipboard_text = pyperclip.paste()
+            if clipboard_text != self.clipboard_content:
+                self.clipboard_content = clipboard_text
+                if not self.is_first_check and clipboard_text:
+                    current_text = self.text_input.get("1.0", tk.END).strip()
+                    # 既存のテキストがある場合は改行を追加
+                    if current_text:
+                        self.text_input.insert(tk.END, "\n" + clipboard_text)
+                    else:
+                        self.text_input.insert(tk.END, clipboard_text)
+                    self.update_stats(None)
+                self.is_first_check = False
+        except Exception as e:
+            print(f"クリップボード監視エラー: {e}")
+
+        # 定期的に再チェック (500ミリ秒ごと)
+        self.root.after(500, self.check_clipboard)
+
+    def update_stats(self, event):
+        """テキストの行数と文字数を更新"""
+        text = self.text_input.get("1.0", tk.END)
+        lines = text.count('\n')
+        chars = len(text) - lines  # 改行文字を除く
+
+        if text.strip() == "":
+            lines = 0
+            chars = 0
+
+        self.stats_label.config(text=f"行数: {lines}  文字数: {chars}")
+
+    def convert_to_json(self):
+        """テキストをJSON形式に変換"""
+        try:
+            text = self.text_input.get("1.0", tk.END)
+            if not text.strip():
+                messagebox.showwarning("警告", "変換するテキストがありません。")
+                return
+
+            # parse_medical_text関数を使用して変換
+            parsed_data = parse_medical_text(text)
+
+            # JSONに変換
+            json_data = json.dumps(parsed_data, indent=2, ensure_ascii=False)
+
+            # 出力エリアに表示
+            self.text_output.delete("1.0", tk.END)
+            self.text_output.insert(tk.END, json_data)
+
+            # クリップボードにJSONデータをコピー
+            pyperclip.copy(json_data)
+
+            # 完了メッセージを表示
+            messagebox.showinfo("完了", "JSON形式に変換しました。")
+
+        except Exception as e:
+            messagebox.showerror("エラー", f"変換中にエラーが発生しました: {e}")
+
+    def clear_text(self):
+        """入力テキストと出力テキストをクリア"""
+        self.text_input.delete("1.0", tk.END)
+        self.text_output.delete("1.0", tk.END)
+        self.update_stats(None)
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = MedicalTextConverter(root)
+    root.mainloop()
