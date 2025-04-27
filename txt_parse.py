@@ -9,7 +9,7 @@ def parse_medical_text(text):
     current_record = {}
     content_buffer = ""
 
-    date_pattern = re.compile(r"(\d{4}/\d{2}/\d{2}\(.?\))\s*（入院\s*(\d+)\s*日目）")
+    date_pattern = re.compile(r"(\d{4}/\d{2}/\d{2}\(.?\))(?:\s*（入院\s*(\d+)\s*日目）)?")
     entry_pattern = re.compile(r"(.+?)\s+(.+?)\s+(.+?)\s+(\d{2}:\d{2})")
     soap_pattern = re.compile(r"([SOAPF])\s*>")
 
