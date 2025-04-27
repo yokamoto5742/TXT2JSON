@@ -92,6 +92,7 @@ def parse_medical_text(text):
     for record in records:
         record.pop('doctor', None)
         record.pop('insurance', None)
+        record.pop('days_in_hospital', None)
         record.pop('_doctor_temp', None)
         record.pop('_insurance_temp', None)
         final_records.append(record)
