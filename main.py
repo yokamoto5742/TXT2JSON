@@ -4,6 +4,7 @@ import pyperclip
 import re
 from io import StringIO
 from txt_parse import parse_medical_text
+import mouse_automation
 import json
 import subprocess
 import sys
@@ -13,8 +14,8 @@ import os
 class MedicalTextConverter:
     def __init__(self, root):
         self.root = root
-        self.root.title("JSON形式に変換")
-        self.root.geometry("800x600")
+        self.root.title("JSON形式変換")
+        self.root.geometry("1000x600")
 
         # クリップボード監視状態を管理する変数
         self.is_monitoring_clipboard = True
@@ -172,12 +173,10 @@ class MedicalTextConverter:
         self.text_output.delete("1.0", tk.END)
         self.update_stats(None)
 
-    @staticmethod
-    def run_mouse_automation():
+    def run_mouse_automation(self):
         """mouse_automation.pyの機能を実行"""
         try:
-            # mouse_automation.pyのmain関数を呼び出す
-            import mouse_automation
+            self.root.iconify()
             mouse_automation.main()
         except Exception as e:
             messagebox.showerror("エラー", f"マウス操作自動化の実行中にエラーが発生しました: {e}")
