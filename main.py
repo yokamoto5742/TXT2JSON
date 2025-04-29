@@ -158,7 +158,7 @@ class MedicalTextConverter:
         """クリップボード監視を開始"""
         self.is_monitoring_clipboard = True
         self.monitor_status_label.config(text="クリップボード監視: ON", fg="green")
-        self.is_first_check = True  # 監視再開時に現在のクリップボード内容を取り込まないようにリセット
+        self.is_first_check = True
 
 
 if __name__ == "__main__":
