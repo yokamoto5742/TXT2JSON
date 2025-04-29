@@ -10,7 +10,7 @@ import json
 class MedicalTextConverter:
     def __init__(self, root):
         self.root = root
-        self.root.title("医療テキスト変換アプリ")
+        self.root.title("JSON形式に変換")
         self.root.geometry("800x600")
 
         # クリップボード監視状態を管理する変数
@@ -40,7 +40,7 @@ class MedicalTextConverter:
         self.frame_stats = tk.Frame(root)
         self.frame_stats.pack(fill=tk.X)
 
-        self.stats_label = tk.Label(self.frame_stats, text="行数: 0  文字数: 0")
+        self.stats_label = tk.Label(self.frame_stats, text="カルテ記載行数: 0  文字数: 0")
         self.stats_label.pack(side=tk.LEFT, padx=5, pady=5)
 
         # クリップボード監視状態の表示
