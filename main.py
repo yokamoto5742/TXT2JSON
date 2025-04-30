@@ -1,15 +1,16 @@
-import tkinter as tk
-from tkinter import scrolledtext, messagebox
-import pyperclip
-import re
-from io import StringIO
-from txt_parse import parse_medical_text
-import mouse_automation
 import json
+import os
+import re
 import subprocess
 import sys
-import os
+from io import StringIO
 
+import pyperclip
+import tkinter as tk
+from tkinter import scrolledtext, messagebox
+
+from services import mouse_automation
+from services.txt_parse import parse_medical_text
 
 class MedicalTextConverter:
     def __init__(self, root):
@@ -55,15 +56,15 @@ class MedicalTextConverter:
         self.frame_buttons = tk.Frame(root)
         self.frame_buttons.pack(fill=tk.X, pady=10)
 
-        # SOAP画面設定ボタン
-        self.soap_button = tk.Button(self.frame_buttons, text="SOAP画面設定",
-                                      command=self.run_mouse_automation, width=15, height=2)
-        self.soap_button.pack(side=tk.LEFT, padx=10)
-
         # 新規登録ボタン
         self.new_button = tk.Button(self.frame_buttons, text="新規登録",
                                     command=self.start_monitoring, width=15, height=2)
         self.new_button.pack(side=tk.LEFT, padx=10)
+
+        # SOAP画面設定ボタン
+        self.soap_button = tk.Button(self.frame_buttons, text="SOAP画面設定",
+                                     command=self.run_mouse_automation, width=15, height=2)
+        self.soap_button.pack(side=tk.LEFT, padx=10)
 
         # JSON変換ボタン
         self.convert_button = tk.Button(self.frame_buttons, text="JSON形式に変換",
