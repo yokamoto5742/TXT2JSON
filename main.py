@@ -89,6 +89,26 @@ class MedicalTextConverter:
         # テキスト変更イベントをバインド
         self.text_input.bind("<KeyRelease>", self.update_stats)
 
+    def show_copy_notification(self):
+        """コピー通知のポップアップウィンドウを表示"""
+        popup = tk.Toplevel(self.root)
+        popup.title("通知")
+        popup.geometry("200x100")
+        # 親ウィンドウの中央に配置
+        x = self.root.winfo_x() + (self.root.winfo_width() // 2) - 100
+        y = self.root.winfo_y() + (self.root.winfo_height() // 2) - 50
+        popup.geometry(f"+{x}+{y}")
+
+        # 装飾設定
+        popup.configure(bg="#f0f0f0")
+        popup.attributes("-topmost", True)  # 最前面に表示
+
+        # ラベル
+        label = tk.Label(popup, text="コピーしました", font=("Helvetica", 12), bg="#f0f0f0", pady=20)
+        label.pack(expand=True, fill=tk.BOTH)
+
+        popup.after(2000, popup.destroy)
+
     def check_clipboard(self):
         """クリップボードの内容を監視し、変更があれば取得して表示"""
         if self.is_monitoring_clipboard:
@@ -104,6 +124,10 @@ class MedicalTextConverter:
                         else:
                             self.text_input.insert(tk.END, clipboard_text)
                         self.update_stats(None)
+
+                        # コピー通知のポップアップを表示
+                        self.show_copy_notification()
+
                     self.is_first_check = False
             except Exception as e:
                 print(f"クリップボード監視エラー: {e}")
