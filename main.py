@@ -94,16 +94,11 @@ class MedicalTextConverter:
         popup = tk.Toplevel(self.root)
         popup.title("通知")
         popup.geometry("200x100")
-        # 親ウィンドウの中央に配置
-        x = self.root.winfo_x() + (self.root.winfo_width() // 2) - 100
-        y = self.root.winfo_y() + (self.root.winfo_height() // 2) - 50
-        popup.geometry(f"+{x}+{y}")
+        popup.geometry("+10+10")
 
-        # 装飾設定
         popup.configure(bg="#f0f0f0")
-        popup.attributes("-topmost", True)  # 最前面に表示
+        popup.attributes("-topmost", True)
 
-        # ラベル
         label = tk.Label(popup, text="コピーしました", font=("Helvetica", 12), bg="#f0f0f0", pady=20)
         label.pack(expand=True, fill=tk.BOTH)
 
