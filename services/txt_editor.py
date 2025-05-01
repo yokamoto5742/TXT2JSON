@@ -9,6 +9,8 @@ class TextEditor:
     def __init__(self, parent=None, initial_text=""):
         self.parent = parent
         self.initial_text = initial_text
+        self.font_size = 10  # デフォルトのフォントサイズ
+        self.on_close = None  # 閉じる際のコールバック関数
 
         # 新しいウィンドウを作成
         self.window = tk.Toplevel(parent) if parent else tk.Tk()
@@ -16,7 +18,7 @@ class TextEditor:
         self.window.geometry("800x600")
 
         # メインのテキストエリア
-        self.text_area = scrolledtext.ScrolledText(self.window, wrap=tk.WORD, font=("Yu Gothic UI", 10))
+        self.text_area = scrolledtext.ScrolledText(self.window, wrap=tk.WORD, font=("Yu Gothic UI", self.font_size))
         self.text_area.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
 
         # 初期テキストがあれば設定
@@ -26,6 +28,28 @@ class TextEditor:
         # ボタンフレーム
         button_frame = tk.Frame(self.window)
         button_frame.pack(fill=tk.X, padx=10, pady=10)
+
+        # フォントサイズ変更フレーム
+        font_frame = tk.Frame(button_frame)
+        font_frame.pack(side=tk.LEFT, padx=5)
+
+        # フォントサイズラベル
+        font_label = tk.Label(font_frame, text="文字サイズ:")
+        font_label.pack(side=tk.LEFT)
+
+        # フォントサイズ減少ボタン
+        decrease_font = tk.Button(font_frame, text="-", command=self.decrease_font_size, width=2)
+        decrease_font.pack(side=tk.LEFT)
+
+        # フォントサイズ表示
+        self.font_size_var = tk.StringVar()
+        self.font_size_var.set(str(self.font_size))
+        font_size_display = tk.Label(font_frame, textvariable=self.font_size_var, width=2)
+        font_size_display.pack(side=tk.LEFT)
+
+        # フォントサイズ増加ボタン
+        increase_font = tk.Button(font_frame, text="+", command=self.increase_font_size, width=2)
+        increase_font.pack(side=tk.LEFT)
 
         # テキストクリアボタン
         clear_button = tk.Button(button_frame, text="テキストクリア", command=self.clear_text, width=15, height=2)
@@ -79,6 +103,11 @@ class TextEditor:
         if self.parent:
             # メインウィンドウの子ウィンドウの場合
             self.window.destroy()
+            # メインウィンドウを再表示
+            self.parent.deiconify()
+            # 閉じる際のコールバックがあれば実行（クリップボード監視の再開など）
+            if self.on_close:
+                self.on_close()
         else:
             # 単独で実行された場合
             self.window.quit()
@@ -86,6 +115,23 @@ class TextEditor:
     def get_text(self):
         """現在のテキストを取得"""
         return self.text_area.get(1.0, tk.END)
+
+    def increase_font_size(self):
+        """フォントサイズを増加"""
+        if self.font_size < 36:  # 最大フォントサイズ
+            self.font_size += 1
+            self.update_font()
+
+    def decrease_font_size(self):
+        """フォントサイズを減少"""
+        if self.font_size > 10:  # 最小フォントサイズ
+            self.font_size -= 1
+            self.update_font()
+
+    def update_font(self):
+        """フォントを更新"""
+        self.text_area.configure(font=("Yu Gothic UI", self.font_size))
+        self.font_size_var.set(str(self.font_size))
 
     def run(self):
         """ウィンドウを実行（単独で実行する場合）"""

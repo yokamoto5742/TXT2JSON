@@ -211,7 +211,17 @@ class MedicalTextConverter:
     def open_text_editor(self):
         """テキストエディタウィンドウを開く"""
         text_content = self.text_input.get("1.0", tk.END)
+        # クリップボード監視を停止
+        self.stop_monitoring()
+        # メインウィンドウを非表示にする
+        self.root.withdraw()
         editor = TextEditor(self.root, text_content)
+        # テキストエディタを閉じた際にクリップボード監視を再開するコールバックを設定
+        editor.on_close = self._restore_clipboard_monitoring
+
+    def _restore_clipboard_monitoring(self):
+        """テキストエディタが閉じられた後にクリップボード監視を再開"""
+        self.start_monitoring()
 
 
 if __name__ == "__main__":
