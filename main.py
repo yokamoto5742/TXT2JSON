@@ -11,6 +11,8 @@ from tkinter import scrolledtext, messagebox
 
 from services import mouse_automation
 from services.txt_parse import parse_medical_text
+from services.txt_editor import TextEditor
+
 
 class MedicalTextConverter:
     def __init__(self, root):
@@ -75,6 +77,11 @@ class MedicalTextConverter:
         self.clear_button = tk.Button(self.frame_buttons, text="テキストクリア",
                                       command=self.clear_text, width=15, height=2)
         self.clear_button.pack(side=tk.LEFT, padx=10)
+
+        # テキストエディタボタン
+        self.editor_button = tk.Button(self.frame_buttons, text="出力結果確認",
+                                       command=self.open_text_editor, width=15, height=2)
+        self.editor_button.pack(side=tk.LEFT, padx=10)
 
         # 閉じるボタン
         self.close_button = tk.Button(self.frame_buttons, text="閉じる",
@@ -200,6 +207,11 @@ class MedicalTextConverter:
             mouse_automation.main()
         except Exception as e:
             messagebox.showerror("エラー", f"マウス操作自動化の実行中にエラーが発生しました: {e}")
+
+    def open_text_editor(self):
+        """テキストエディタウィンドウを開く"""
+        text_content = self.text_input.get("1.0", tk.END)
+        editor = TextEditor(self.root, text_content)
 
 
 if __name__ == "__main__":
