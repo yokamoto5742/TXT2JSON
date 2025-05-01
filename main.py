@@ -13,12 +13,13 @@ from tkinter import scrolledtext, messagebox
 from services import mouse_automation
 from services.txt_parse import parse_medical_text
 from services.txt_editor import TextEditor
+from version import VERSION
 
 
 class MedicalTextConverter:
     def __init__(self, root):
         self.root = root
-        self.root.title("JSON形式変換")
+        self.root.title(f"JSON形式変換 v{VERSION}")
         self.root.geometry("1000x600")
 
         # クリップボード監視状態を管理する変数

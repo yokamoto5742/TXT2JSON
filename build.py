@@ -11,7 +11,6 @@ def build_executable():
         "--name=TXT2JSON",
         "--windowed",
         "--icon=assets/TXT2JSON.ico",
-        "--add-data", "config.ini;.",
         "main.py"
     ])
 
