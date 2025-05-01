@@ -148,7 +148,7 @@ class MedicalTextConverter:
             pyperclip.copy(json_data)
 
             # 完了メッセージを表示
-            messagebox.showinfo("完了", "JSON形式に変換しました。")
+            messagebox.showinfo("完了", "JSON形式に変換してコピーしました")
 
         except Exception as e:
             messagebox.showerror("エラー", f"変換中にエラーが発生しました: {e}")
