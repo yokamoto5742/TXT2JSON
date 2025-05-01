@@ -4,6 +4,7 @@ import re
 import subprocess
 import sys
 from io import StringIO
+from pickle import FALSE
 
 import pyperclip
 import tkinter as tk
@@ -210,18 +211,13 @@ class MedicalTextConverter:
 
     def open_text_editor(self):
         """テキストエディタウィンドウを開く"""
-        # クリップボード監視を停止
         self.stop_monitoring()
-        # メインウィンドウを非表示にする
         self.root.withdraw()
-        # 初期テキストを渡さずにエディタを起動
         editor = TextEditor(self.root, "")
-        # テキストエディタを閉じた際にクリップボード監視を再開するコールバックを設定
         editor.on_close = self._restore_clipboard_monitoring
 
     def _restore_clipboard_monitoring(self):
-        """テキストエディタが閉じられた後にクリップボード監視を再開"""
-        self.start_monitoring()
+        self.is_monitoring_clipboard = FALSE
 
 
 if __name__ == "__main__":
