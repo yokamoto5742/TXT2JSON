@@ -90,10 +90,7 @@ class TextEditor:
             with open(temp_file, "w", encoding="utf-8") as f:
                 f.write(text_content)
 
-            # Windowsのメモ帳で印刷ダイアログを開く
             os.system(f'notepad /p "{temp_file}"')
-
-            messagebox.showinfo("印刷", "印刷ダイアログを開きました。")
 
         except Exception as e:
             messagebox.showerror("エラー", f"印刷中にエラーが発生しました: {e}")
