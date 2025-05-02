@@ -4,7 +4,6 @@ import re
 import subprocess
 import sys
 from io import StringIO
-from pickle import FALSE
 
 import pyperclip
 import tkinter as tk
@@ -218,7 +217,7 @@ class MedicalTextConverter:
         editor.on_close = self._restore_clipboard_monitoring
 
     def _restore_clipboard_monitoring(self):
-        self.is_monitoring_clipboard = FALSE
+        self.is_monitoring_clipboard = False
 
 
 if __name__ == "__main__":
