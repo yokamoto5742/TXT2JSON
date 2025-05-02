@@ -204,11 +204,27 @@ class MedicalTextConverter:
         self.text_output.delete("1.0", tk.END)
         self.update_stats(None)
 
+    def show_notification(self, message):
+        """通知のポップアップウィンドウを表示"""
+        popup = tk.Toplevel(self.root)
+        popup.title("通知")
+        popup.geometry("200x100")
+        popup.geometry("+10+10")
+
+        popup.configure(bg="#f0f0f0")
+        popup.attributes("-topmost", True)
+
+        label = tk.Label(popup, text=message, font=("Helvetica", 12), bg="#f0f0f0", pady=20)
+        label.pack(expand=True, fill=tk.BOTH)
+
+        popup.after(2000, popup.destroy)
+
     def run_mouse_automation(self):
         """mouse_automation.pyの機能を実行"""
         try:
             self.root.iconify()
             mouse_automation.main()
+            self.show_notification("すべての操作が完了しました。")
         except Exception as e:
             messagebox.showerror("エラー", f"マウス操作自動化の実行中にエラーが発生しました: {e}")
 

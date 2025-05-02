@@ -48,7 +48,6 @@ def run_actions(lines):
 
                 print(f"実行: {wait_time}秒待機後、座標({x_coord}, {y_coord})で{action}")
 
-        print("すべての操作が完了しました。")
     except Exception as e:
         print(f"エラー: {e}")
 
