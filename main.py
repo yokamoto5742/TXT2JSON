@@ -99,6 +99,9 @@ class MedicalTextConverter:
 
     def show_copy_notification(self):
         """コピー通知のポップアップウィンドウを表示"""
+        if not self.is_monitoring_clipboard:
+            return
+
         popup = tk.Toplevel(self.root)
         popup.title("通知")
         popup.geometry("200x100")
