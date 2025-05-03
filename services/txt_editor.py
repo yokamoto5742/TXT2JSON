@@ -11,7 +11,6 @@ class TextEditor:
         self.parent = parent
         self.config = load_config()
 
-        # 設定ファイルから値を読み込み
         self.editor_width = self.config.getint('Appearance', 'editor_width', fallback=600)
         self.editor_height = self.config.getint('Appearance', 'editor_height', fallback=600)
         self.editor_window_position = self.config.get('Appearance', 'editor_window_position', fallback='+10+10')

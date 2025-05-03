@@ -21,7 +21,6 @@ class MedicalTextConverter:
         self.root = root
         self.config = load_config()
 
-        # 設定ファイルから値を読み込み
         self.window_width = self.config.getint('Appearance', 'window_width', fallback=1200)
         self.window_height = self.config.getint('Appearance', 'window_height', fallback=800)
         self.main_window_position = self.config.get('Appearance', 'main_window_position', fallback='+10+10')
