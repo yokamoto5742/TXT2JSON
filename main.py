@@ -26,6 +26,9 @@ class MedicalTextConverter:
         self.main_window_position = self.config.get('Appearance', 'main_window_position', fallback='+10+10')
         self.text_area_font_size = self.config.getint('Appearance', 'text_area_font_size', fallback=11)
         self.text_area_font_name = self.config.get('Appearance', 'text_area_font_name', fallback='Yu Gothic UI')
+        # ボタンサイズの設定を追加
+        self.button_width = self.config.getint('Appearance', 'button_width', fallback=15)
+        self.button_height = self.config.getint('Appearance', 'button_height', fallback=2)
 
         self.root.title(f"JSON形式変換 v{VERSION}")
         self.root.geometry(f"{self.window_width}x{self.window_height}{self.main_window_position}")
@@ -63,27 +66,33 @@ class MedicalTextConverter:
         self.frame_buttons.pack(fill=tk.X, pady=10)
 
         self.new_button = tk.Button(self.frame_buttons, text="新規登録",
-                                    command=self.start_monitoring, width=15, height=2)
+                                    command=self.start_monitoring,
+                                    width=self.button_width, height=self.button_height)
         self.new_button.pack(side=tk.LEFT, padx=10)
 
         self.soap_button = tk.Button(self.frame_buttons, text="SOAP検索設定",
-                                     command=self.run_mouse_automation, width=15, height=2)
+                                     command=self.run_mouse_automation,
+                                     width=self.button_width, height=self.button_height)
         self.soap_button.pack(side=tk.LEFT, padx=10)
 
         self.convert_button = tk.Button(self.frame_buttons, text="JSON形式変換",
-                                        command=self.convert_to_json, width=15, height=2)
+                                        command=self.convert_to_json,
+                                        width=self.button_width, height=self.button_height)
         self.convert_button.pack(side=tk.LEFT, padx=10)
 
         self.clear_button = tk.Button(self.frame_buttons, text="テキストクリア",
-                                      command=self.clear_text, width=15, height=2)
+                                      command=self.clear_text,
+                                      width=self.button_width, height=self.button_height)
         self.clear_button.pack(side=tk.LEFT, padx=10)
 
         self.editor_button = tk.Button(self.frame_buttons, text="出力結果確認",
-                                       command=self.open_text_editor, width=15, height=2)
+                                       command=self.open_text_editor,
+                                       width=self.button_width, height=self.button_height)
         self.editor_button.pack(side=tk.LEFT, padx=10)
 
         self.close_button = tk.Button(self.frame_buttons, text="閉じる",
-                                      command=self.root.destroy, width=15, height=2)
+                                      command=self.root.destroy,
+                                      width=self.button_width, height=self.button_height)
         self.close_button.pack(side=tk.LEFT, padx=10)
 
         self.clipboard_content = ''

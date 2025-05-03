@@ -16,6 +16,9 @@ class TextEditor:
         self.editor_window_position = self.config.get('Appearance', 'editor_window_position', fallback='+10+10')
         self.font_size = self.config.getint('Appearance', 'text_area_font_size', fallback=11)
         self.font_name = self.config.get('Appearance', 'text_area_font_name', fallback='Yu Gothic UI')
+        # ボタンサイズの設定を追加
+        self.button_width = self.config.getint('Appearance', 'button_width', fallback=15)
+        self.button_height = self.config.getint('Appearance', 'button_height', fallback=2)
 
         self.on_close = None
 
@@ -37,13 +40,16 @@ class TextEditor:
         font_frame = tk.Frame(button_frame)
         font_frame.pack(side=tk.LEFT, padx=5)
 
-        clear_button = tk.Button(button_frame, text="テキストクリア", command=self.clear_text, width=15, height=2)
+        clear_button = tk.Button(button_frame, text="テキストクリア", command=self.clear_text,
+                                 width=self.button_width, height=self.button_height)
         clear_button.pack(side=tk.LEFT, padx=5)
 
-        print_button = tk.Button(button_frame, text="印刷", command=self.print_text, width=15, height=2)
+        print_button = tk.Button(button_frame, text="印刷", command=self.print_text,
+                                 width=self.button_width, height=self.button_height)
         print_button.pack(side=tk.LEFT, padx=5)
 
-        close_button = tk.Button(button_frame, text="閉じる", command=self.close_window, width=15, height=2)
+        close_button = tk.Button(button_frame, text="閉じる", command=self.close_window,
+                                 width=self.button_width, height=self.button_height)
         close_button.pack(side=tk.LEFT, padx=5)
 
         self.window.protocol("WM_DELETE_WINDOW", self.close_window)
