@@ -46,16 +46,13 @@ def run_actions(lines):
                 elif "ﾀﾞﾌﾞﾙｸﾘｯｸ" in action:
                     pyautogui.doubleClick()
 
-                print(f"実行: {wait_time}秒待機後、座標({x_coord}, {y_coord})で{action}")
-
     except Exception as e:
         print(f"エラー: {e}")
 
 
 def main():
-    # 常に指定されたファイルパスを使用
-    file_path = r"C:\Shinseikai\TXT2JSON\mouseoperation.txt"
-    run_from_file(file_path)
+    operation_file_path = r"C:\Shinseikai\TXT2JSON\mouseoperation.txt"
+    run_from_file(operation_file_path)
 
 
 if __name__ == "__main__":
