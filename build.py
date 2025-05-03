@@ -15,6 +15,8 @@ def build_executable():
         "main.py"
     ])
 
+    # utils/config.ini をコピーして_internalに入れる。C:\Shinseikai\TXT2JSONに実行ファイルを移動。
+
     print(f"Executable built successfully. Version: {new_version}")
 
 
