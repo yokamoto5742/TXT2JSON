@@ -59,4 +59,14 @@ def parse_medical_text(text):
 
     process_record(current_record, content_buffer, records)
 
-    return records
+    unique_records = []
+    seen_keys = set()
+
+    for record in records:
+        key = (record['date'], record['department'], record['time'], record['soap_section'], record['content'])
+
+        if key not in seen_keys:
+            seen_keys.add(key)
+            unique_records.append(record)
+
+    return unique_records
