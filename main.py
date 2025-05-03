@@ -82,7 +82,6 @@ class MedicalTextConverter:
         self.text_input.bind("<KeyRelease>", self.update_stats)
 
     def show_notification(self, message, timeout=2000, position="+10+10"):
-        """通知ポップアップを表示する共通メソッド"""
         popup = tk.Toplevel(self.root)
         popup.title("通知")
         popup.geometry("200x100")
