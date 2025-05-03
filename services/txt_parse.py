@@ -4,7 +4,7 @@ import re
 from io import StringIO
 
 
-def save_current_record(current_record, content_buffer, records):
+def process_record(current_record, content_buffer, records, new_record_data=None):
     if current_record.get('date') and current_record.get('soap_section') and content_buffer.strip():
         record = {
             'date': current_record['date'],
@@ -14,6 +14,11 @@ def save_current_record(current_record, content_buffer, records):
             'content': content_buffer.strip()
         }
         records.append(record)
+
+    if new_record_data:
+        current_record.update(new_record_data)
+
+    return ""
 
 
 def parse_medical_text(text):
@@ -32,32 +37,26 @@ def parse_medical_text(text):
 
         date_match = date_pattern.match(line)
         if date_match:
-            save_current_record(current_record, content_buffer, records)
-            current_record = {'date': date_match.group(1)}
-            content_buffer = ""
+            content_buffer = process_record(current_record, content_buffer, records, {'date': date_match.group(1)})
             continue
 
         entry_match = entry_pattern.match(line)
         if entry_match and current_record.get('date'):
-            save_current_record(current_record, content_buffer, records)
-            current_record = {
-                'date': current_record['date'],
+            content_buffer = process_record(current_record, content_buffer, records, {
                 'department': entry_match.group(1).strip(),
                 'time': entry_match.group(4).strip()
-            }
-            content_buffer = ""
+            })
             continue
 
         soap_match = soap_pattern.match(line)
         if soap_match and current_record.get('department'):
-            save_current_record(current_record, content_buffer, records)
-            current_record['soap_section'] = soap_match.group(1)
-            content_buffer = ""
+            content_buffer = process_record(current_record, content_buffer, records,
+                                            {'soap_section': soap_match.group(1)})
             continue
 
         if current_record.get('soap_section'):
             content_buffer += line + "\n"
 
-    save_current_record(current_record, content_buffer, records)
+    process_record(current_record, content_buffer, records)
 
     return records
