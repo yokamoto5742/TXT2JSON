@@ -81,22 +81,20 @@ class MedicalTextConverter:
 
         self.text_input.bind("<KeyRelease>", self.update_stats)
 
-    def show_copy_notification(self):
-        if not self.is_monitoring_clipboard:
-            return
-
+    def show_notification(self, message, timeout=2000, position="+10+10"):
+        """通知ポップアップを表示する共通メソッド"""
         popup = tk.Toplevel(self.root)
         popup.title("通知")
         popup.geometry("200x100")
-        popup.geometry("+10+10")
+        popup.geometry(position)
 
         popup.configure(bg="#f0f0f0")
         popup.attributes("-topmost", True)
 
-        label = tk.Label(popup, text="コピーしました", font=("Helvetica", 12), bg="#f0f0f0", pady=20)
+        label = tk.Label(popup, text=message, font=("Helvetica", 12), bg="#f0f0f0", pady=20)
         label.pack(expand=True, fill=tk.BOTH)
 
-        popup.after(2000, popup.destroy)
+        popup.after(timeout, popup.destroy)
 
     def check_clipboard(self):
         if self.is_monitoring_clipboard:
@@ -112,7 +110,7 @@ class MedicalTextConverter:
                             self.text_input.insert(tk.END, clipboard_text)
                         self.update_stats(None)
 
-                        self.show_copy_notification()
+                        self.show_notification("コピーしました")
 
                     self.is_first_check = False
             except Exception as e:
@@ -138,7 +136,7 @@ class MedicalTextConverter:
                 messagebox.showwarning("警告", "変換するテキストがありません。")
                 return
 
-            self.stop_monitoring()
+            self.set_monitoring_state(False)
 
             parsed_data = parse_medical_text(text)
             json_data = json.dumps(parsed_data, indent=2, ensure_ascii=False)
@@ -158,42 +156,28 @@ class MedicalTextConverter:
         self.text_output.delete("1.0", tk.END)
         self.update_stats(None)
 
-    def stop_monitoring(self):
-        self.is_monitoring_clipboard = False
-        self.monitor_status_label.config(text="クリップボード監視: OFF", fg="red")
+    def set_monitoring_state(self, enabled):
+        self.is_monitoring_clipboard = enabled
+        if enabled:
+            self.monitor_status_label.config(text="クリップボード監視: ON", fg="green")
+        else:
+            self.monitor_status_label.config(text="クリップボード監視: OFF", fg="red")
 
     def start_monitoring(self):
-        self.is_monitoring_clipboard = True
-        self.monitor_status_label.config(text="クリップボード監視: ON", fg="green")
+        self.set_monitoring_state(True)
         self.is_first_check = True
-        self.text_input.delete("1.0", tk.END)
-        self.text_output.delete("1.0", tk.END)
-        self.update_stats(None)
-
-    def show_notification(self, message):
-        popup = tk.Toplevel(self.root)
-        popup.title("通知")
-        popup.geometry("200x100")
-        popup.geometry("+10+10")
-
-        popup.configure(bg="#f0f0f0")
-        popup.attributes("-topmost", True)
-
-        label = tk.Label(popup, text=message, font=("Helvetica", 12), bg="#f0f0f0", pady=20)
-        label.pack(expand=True, fill=tk.BOTH)
-
-        popup.after(2000, popup.destroy)
+        self.clear_text()
 
     def run_mouse_automation(self):
         try:
             self.root.iconify()
             mouse_automation.main()
-            self.show_notification("すべての操作が完了しました。")
+            self.show_notification("設定完了", timeout=2000, position="+10+10")
         except Exception as e:
             messagebox.showerror("エラー", f"マウス操作自動化の実行中にエラーが発生しました: {e}")
 
     def open_text_editor(self):
-        self.stop_monitoring()
+        self.set_monitoring_state(False)
         self.root.withdraw()
         editor = TextEditor(self.root, "")
         editor.on_close = self._restore_clipboard_monitoring
