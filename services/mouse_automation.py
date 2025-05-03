@@ -1,6 +1,7 @@
 import time
 import sys
 import pyautogui
+from utils.config_manager import load_config
 
 pyautogui.FAILSAFE = True
 
@@ -51,7 +52,8 @@ def run_actions(lines):
 
 
 def main():
-    operation_file_path = r"C:\Shinseikai\TXT2JSON\mouseoperation.txt"
+    config = load_config()
+    operation_file_path = config.get('Paths', 'operation_file_path')
     run_from_file(operation_file_path)
 
 

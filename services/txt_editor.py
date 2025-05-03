@@ -3,20 +3,33 @@ import tkinter as tk
 import os
 from datetime import datetime
 from tkinter import scrolledtext, messagebox
+from utils.config_manager import load_config
 
 
 class TextEditor:
     def __init__(self, parent=None, initial_text=""):
         self.parent = parent
-        self.font_size = 11
+        self.config = load_config()
+
+        # 設定ファイルから値を読み込み
+        self.editor_width = self.config.getint('Appearance', 'editor_width', fallback=600)
+        self.editor_height = self.config.getint('Appearance', 'editor_height', fallback=600)
+        self.editor_window_position = self.config.get('Appearance', 'editor_window_position', fallback='+10+10')
+        self.font_size = self.config.getint('Appearance', 'text_area_font_size', fallback=11)
+        self.font_name = self.config.get('Appearance', 'text_area_font_name', fallback='Yu Gothic UI')
+
         self.on_close = None
 
         self.window = tk.Toplevel(parent) if parent else tk.Tk()
         self.window.title("出力結果確認")
-        self.window.geometry("600x600")
+        self.window.geometry(f"{self.editor_width}x{self.editor_height}{self.editor_window_position}")
 
-        self.text_area = scrolledtext.ScrolledText(self.window, wrap=tk.WORD, font=("Yu Gothic UI", self.font_size))
+        self.text_area = scrolledtext.ScrolledText(self.window, wrap=tk.WORD,
+                                                   font=(self.font_name, self.font_size))
         self.text_area.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
+
+        if initial_text:
+            self.text_area.insert(tk.END, initial_text)
 
         button_frame = tk.Frame(self.window)
         button_frame.pack(fill=tk.X, padx=10, pady=10)
@@ -72,6 +85,7 @@ class TextEditor:
     def run(self):
         if not self.parent:
             self.window.mainloop()
+
 
 if __name__ == "__main__":
     editor = TextEditor()

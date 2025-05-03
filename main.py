@@ -12,14 +12,24 @@ from tkinter import scrolledtext, messagebox
 from services import mouse_automation
 from services.txt_parse import parse_medical_text
 from services.txt_editor import TextEditor
+from utils.config_manager import load_config
 from version import VERSION
 
 
 class MedicalTextConverter:
     def __init__(self, root):
         self.root = root
+        self.config = load_config()
+
+        # 設定ファイルから値を読み込み
+        self.window_width = self.config.getint('Appearance', 'window_width', fallback=1200)
+        self.window_height = self.config.getint('Appearance', 'window_height', fallback=800)
+        self.main_window_position = self.config.get('Appearance', 'main_window_position', fallback='+10+10')
+        self.text_area_font_size = self.config.getint('Appearance', 'text_area_font_size', fallback=11)
+        self.text_area_font_name = self.config.get('Appearance', 'text_area_font_name', fallback='Yu Gothic UI')
+
         self.root.title(f"JSON形式変換 v{VERSION}")
-        self.root.geometry("1200x800")
+        self.root.geometry(f"{self.window_width}x{self.window_height}{self.main_window_position}")
 
         self.is_monitoring_clipboard = True
 
@@ -29,13 +39,15 @@ class MedicalTextConverter:
         self.frame_karte = tk.LabelFrame(self.frame_top, text="カルテ記載")
         self.frame_karte.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        self.text_input = scrolledtext.ScrolledText(self.frame_karte, height=10)
+        self.text_input = scrolledtext.ScrolledText(self.frame_karte, height=10,
+                                                    font=(self.text_area_font_name, self.text_area_font_size))
         self.text_input.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         self.frame_json = tk.LabelFrame(self.frame_top, text="JSON形式")
         self.frame_json.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        self.text_output = scrolledtext.ScrolledText(self.frame_json, height=10)
+        self.text_output = scrolledtext.ScrolledText(self.frame_json, height=10,
+                                                     font=(self.text_area_font_name, self.text_area_font_size))
         self.text_output.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # 行数と文字数の表示
@@ -81,7 +93,10 @@ class MedicalTextConverter:
 
         self.text_input.bind("<KeyRelease>", self.update_stats)
 
-    def show_notification(self, message, timeout=2000, position="+10+10"):
+    def show_notification(self, message, timeout=2000, position=None):
+        if position is None:
+            position = self.main_window_position
+
         popup = tk.Toplevel(self.root)
         popup.title("通知")
         popup.geometry("200x100")
@@ -171,7 +186,7 @@ class MedicalTextConverter:
         try:
             self.root.iconify()
             mouse_automation.main()
-            self.show_notification("設定完了", timeout=2000, position="+10+10")
+            self.show_notification("設定完了", timeout=2000)
         except Exception as e:
             messagebox.showerror("エラー", f"マウス操作自動化の実行中にエラーが発生しました: {e}")
 
