@@ -113,7 +113,7 @@ class MedicalTextConverter:
         popup.configure(bg="#f0f0f0")
         popup.attributes("-topmost", True)
 
-        label = tk.Label(popup, text=message, font=("Helvetica", 12), bg="#f0f0f0", pady=20)
+        label = tk.Label(popup, text=message, font=("MS Gothic", 12), bg="#f0f0f0", pady=20)
         label.pack(expand=True, fill=tk.BOTH)
 
         popup.after(timeout, popup.destroy)
