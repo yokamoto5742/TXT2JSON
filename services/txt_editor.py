@@ -22,6 +22,7 @@ class TextEditor:
         self.window = tk.Toplevel(parent) if parent else tk.Tk()
         self.window.title("出力結果確認")
         self.window.geometry(f"{self.editor_width}x{self.editor_height}{self.editor_window_position}")
+        self.window.minsize(self.editor_width, self.editor_height)
 
         self.text_area = scrolledtext.ScrolledText(self.window, wrap=tk.WORD,
                                                    font=(self.font_name, self.font_size))
