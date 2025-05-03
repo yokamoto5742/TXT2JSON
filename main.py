@@ -187,7 +187,6 @@ class MedicalTextConverter:
 
     def start_monitoring(self):
         self.set_monitoring_state(True)
-        self.is_first_check = True
         self.clear_text()
 
     def run_mouse_automation(self):
