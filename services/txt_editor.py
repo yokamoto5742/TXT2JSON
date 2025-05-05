@@ -16,7 +16,6 @@ class TextEditor:
         self.editor_window_position = self.config.get('Appearance', 'editor_window_position', fallback='+10+10')
         self.font_size = self.config.getint('Appearance', 'text_area_font_size', fallback=11)
         self.font_name = self.config.get('Appearance', 'text_area_font_name', fallback='Yu Gothic UI')
-        # ボタンサイズの設定を追加
         self.button_width = self.config.getint('Appearance', 'button_width', fallback=15)
         self.button_height = self.config.getint('Appearance', 'button_height', fallback=2)
 
@@ -33,6 +32,12 @@ class TextEditor:
 
         if initial_text:
             self.text_area.insert(tk.END, initial_text)
+
+        stats_frame = tk.Frame(self.window)
+        stats_frame.pack(fill=tk.X, padx=10)
+
+        self.stats_label = tk.Label(stats_frame, text="行数: 0  文字数: 0")
+        self.stats_label.pack(side=tk.LEFT, padx=5, pady=5)
 
         button_frame = tk.Frame(self.window)
         button_frame.pack(fill=tk.X, padx=10, pady=10)
@@ -52,11 +57,26 @@ class TextEditor:
                                  width=self.button_width, height=self.button_height)
         close_button.pack(side=tk.LEFT, padx=5)
 
+        self.text_area.bind("<KeyRelease>", self.update_stats)
+        self.update_stats(None)
+
         self.window.protocol("WM_DELETE_WINDOW", self.close_window)
+
+    def update_stats(self, event):
+        text = self.text_area.get("1.0", tk.END)
+        lines = text.count('\n')
+        chars = len(text) - lines  # 改行文字を除く
+
+        if text.strip() == "":
+            lines = 0
+            chars = 0
+
+        self.stats_label.config(text=f"行数: {lines}  文字数: {chars}")
 
     def clear_text(self):
         if messagebox.askyesno("確認", "テキストをクリアしますか？"):
             self.text_area.delete(1.0, tk.END)
+            self.update_stats(None)
 
     def print_text(self):
         try:
