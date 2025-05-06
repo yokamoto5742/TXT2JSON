@@ -20,7 +20,7 @@ def build_executable():
     internal_dir = os.path.join(dist_dir, "_internal")
 
     shutil.copy("utils/config.ini", os.path.join(internal_dir, "config.ini"))
-    shutil.copy("utils/mouseoperation.txt", os.path.join(internal_dir, "mouseoperation.txt"))
+    shutil.copy("utils/mouseoperation.txt", os.path.join(dist_dir, "mouseoperation.txt"))
 
     print(f"Executable built successfully. Version: {new_version}")
 
