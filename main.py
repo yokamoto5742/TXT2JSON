@@ -188,6 +188,9 @@ class MedicalTextConverter:
     def start_monitoring(self):
         self.set_monitoring_state(True)
         self.clear_text()
+        pyperclip.copy("")
+        self.clipboard_content = ""
+        self.is_first_check = False
 
     def run_mouse_automation(self):
         try:
