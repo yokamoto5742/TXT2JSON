@@ -1,5 +1,6 @@
 import subprocess
 import os
+import shutil
 from version_manager import update_version, update_version_py
 
 
@@ -15,7 +16,11 @@ def build_executable():
         "main.py"
     ])
 
-    # utils/config.ini をコピーして_internalに入れる。C:\Shinseikai\TXT2JSONに実行ファイルを移動。
+    dist_dir = os.path.join("dist", "TXT2JSON")
+    internal_dir = os.path.join(dist_dir, "_internal")
+
+    shutil.copy("utils/config.ini", os.path.join(internal_dir, "config.ini"))
+    shutil.copy("utils/mouseoperation.txt", os.path.join(internal_dir, "mouseoperation.txt"))
 
     print(f"Executable built successfully. Version: {new_version}")
 
