@@ -33,7 +33,7 @@ class MedicalTextConverter:
         self.root.title(f"JSON形式変換 v{VERSION}")
         self.root.geometry(f"{self.window_width}x{self.window_height}{self.main_window_position}")
 
-        self.is_monitoring_clipboard = True
+        self.is_monitoring_clipboard = False
 
         self.frame_top = tk.Frame(root)
         self.frame_top.pack(fill=tk.BOTH, expand=True)
@@ -59,7 +59,7 @@ class MedicalTextConverter:
         self.stats_label = tk.Label(self.frame_stats, text="カルテ記載行数: 0  文字数: 0")
         self.stats_label.pack(side=tk.LEFT, padx=5, pady=5)
 
-        self.monitor_status_label = tk.Label(self.frame_stats, text="クリップボード監視: ON", fg="green")
+        self.monitor_status_label = tk.Label(self.frame_stats, text="クリップボード監視: OFF", fg="red")
         self.monitor_status_label.pack(side=tk.RIGHT, padx=5, pady=5)
 
         self.frame_buttons = tk.Frame(root)
