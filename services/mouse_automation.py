@@ -1,6 +1,8 @@
 import time
-import sys
+import re
+
 import pyautogui
+
 from utils.config_manager import load_config
 
 pyautogui.FAILSAFE = True
@@ -32,29 +34,47 @@ def run_actions(lines):
             parts = line.strip().split(',')
             if len(parts) >= 4:
                 wait_time = int(parts[0])
-                x_coord = int(parts[1])
-                y_coord = int(parts[2])
                 action = parts[3]
 
                 time.sleep(wait_time)
 
-                pyautogui.moveTo(x_coord, y_coord)
+                if "ｷｰOnly" in action:
+                    if len(parts) >= 5 and parts[4]:
+                        key_sequence = parts[4]
+                        keys = re.findall(r'\^[a-z]', key_sequence.lower())
+                        for key in keys:
+                            pyautogui.hotkey('ctrl', key[1])
+                else:
+                    x_coord = int(parts[1])
+                    y_coord = int(parts[2])
+                    pyautogui.moveTo(x_coord, y_coord)
 
-                if "左ｸﾘｯｸ" in action:
-                    pyautogui.click(button='left')
-                elif "右ｸﾘｯｸ" in action:
-                    pyautogui.click(button='right')
-                elif "ﾀﾞﾌﾞﾙｸﾘｯｸ" in action:
-                    pyautogui.doubleClick()
+                    if "左ｸﾘｯｸ" in action:
+                        pyautogui.click(button='left')
+                    elif "右ｸﾘｯｸ" in action:
+                        pyautogui.click(button='right')
+                    elif "ﾀﾞﾌﾞﾙｸﾘｯｸ" in action:
+                        pyautogui.doubleClick()
 
     except Exception as e:
         print(f"エラー: {e}")
 
-
-def main():
+def soap_copy():
     config = load_config()
-    operation_file_path = config.get('Paths', 'operation_file_path')
-    run_from_file(operation_file_path)
+    try:
+        soap_copy_file_path = config.get('Paths', 'soap_copy_file_path', fallback='soapcopy.txt')
+        run_from_file(soap_copy_file_path)
+    except Exception as e:
+        print(f"SOAPコピーエラー: {e}")
+
+
+def main(operation_type=None):
+    if operation_type == "soap_copy":
+        soap_copy()
+    else:
+        config = load_config()
+        operation_file_path = config.get('Paths', 'operation_file_path')
+        run_from_file(operation_file_path)
 
 
 if __name__ == "__main__":

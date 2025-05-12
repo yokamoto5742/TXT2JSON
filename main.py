@@ -70,6 +70,11 @@ class MedicalTextConverter:
                                      width=self.button_width, height=self.button_height)
         self.soap_button.pack(side=tk.LEFT, padx=10)
 
+        self.soap_copy_button = tk.Button(self.frame_buttons, text="SOAPコピー",
+                                          command=self.soap_copy,
+                                          width=self.button_width, height=self.button_height)
+        self.soap_copy_button.pack(side=tk.LEFT, padx=10)
+
         self.convert_button = tk.Button(self.frame_buttons, text="JSON形式変換",
                                         command=self.convert_to_json,
                                         width=self.button_width, height=self.button_height)
@@ -145,6 +150,14 @@ class MedicalTextConverter:
             chars = 0
 
         self.stats_label.config(text=f"行数: {lines}  文字数: {chars}")
+
+    def soap_copy(self):
+        try:
+            self.root.iconify()
+            mouse_automation.main("soap_copy")
+            self.show_notification("SOAPコピー完了", timeout=2000)
+        except Exception as e:
+            messagebox.showerror("エラー", f"SOAPコピー中にエラーが発生しました: {e}")
 
     def convert_to_json(self):
         try:
