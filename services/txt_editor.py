@@ -3,6 +3,9 @@ import tkinter as tk
 import os
 from datetime import datetime
 from tkinter import scrolledtext, messagebox
+
+import pyperclip
+
 from utils.config_manager import load_config
 
 
@@ -45,7 +48,11 @@ class TextEditor:
         font_frame = tk.Frame(button_frame)
         font_frame.pack(side=tk.LEFT, padx=5)
 
-        clear_button = tk.Button(button_frame, text="テキストクリア", command=self.clear_text,
+        paste_button = tk.Button(button_frame, text="貼り付け", command=self.paste_text,
+                                 width=self.button_width, height=self.button_height)
+        paste_button.pack(side=tk.LEFT, padx=5)
+
+        clear_button = tk.Button(button_frame, text="クリア", command=self.clear_text,
                                  width=self.button_width, height=self.button_height)
         clear_button.pack(side=tk.LEFT, padx=5)
 
@@ -72,6 +79,17 @@ class TextEditor:
             chars = 0
 
         self.stats_label.config(text=f"行数: {lines}  文字数: {chars}")
+
+    def paste_text(self):
+        try:
+            clipboard_text = pyperclip.paste()
+            if clipboard_text:
+                self.text_area.insert(tk.INSERT, clipboard_text)
+                self.update_stats(None)
+            else:
+                messagebox.showinfo("情報", "クリップボードにテキストがありません。")
+        except Exception as e:
+            messagebox.showerror("エラー", f"貼り付け中にエラーが発生しました: {e}")
 
     def clear_text(self):
         if messagebox.askyesno("確認", "テキストをクリアしますか？"):
