@@ -1,9 +1,4 @@
 import json
-import os
-import re
-import subprocess
-import sys
-from io import StringIO
 
 import pyperclip
 import tkinter as tk
