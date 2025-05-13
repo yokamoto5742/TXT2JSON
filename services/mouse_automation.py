@@ -20,7 +20,6 @@ def run_from_file(file_name):
 
     except FileNotFoundError:
         print(f"エラー: ファイル '{file_name}' が見つかりません。")
-        print("指定されたパスにファイルが存在するか確認してください。")
     except Exception as e:
         print(f"エラー: {e}")
 

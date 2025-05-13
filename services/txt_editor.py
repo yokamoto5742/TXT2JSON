@@ -25,7 +25,7 @@ class TextEditor:
         self.on_close = None
 
         self.window = tk.Toplevel(parent) if parent else tk.Tk()
-        self.window.title("出力結果確認")
+        self.window.title("確認フォーム")
         self.window.geometry(f"{self.editor_width}x{self.editor_height}{self.editor_window_position}")
         self.window.minsize(self.editor_width, self.editor_height)
 

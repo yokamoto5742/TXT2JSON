@@ -65,12 +65,12 @@ class MedicalTextConverter:
                                     width=self.button_width, height=self.button_height)
         self.new_button.pack(side=tk.LEFT, padx=10)
 
-        self.soap_button = tk.Button(self.frame_buttons, text="SOAP検索設定",
+        self.soap_button = tk.Button(self.frame_buttons, text="詳細検索設定",
                                      command=self.run_mouse_automation,
                                      width=self.button_width, height=self.button_height)
         self.soap_button.pack(side=tk.LEFT, padx=10)
 
-        self.soap_copy_button = tk.Button(self.frame_buttons, text="SOAPコピー",
+        self.soap_copy_button = tk.Button(self.frame_buttons, text="カルテコピー",
                                           command=self.soap_copy,
                                           width=self.button_width, height=self.button_height)
         self.soap_copy_button.pack(side=tk.LEFT, padx=10)
@@ -85,7 +85,7 @@ class MedicalTextConverter:
                                       width=self.button_width, height=self.button_height)
         self.clear_button.pack(side=tk.LEFT, padx=10)
 
-        self.editor_button = tk.Button(self.frame_buttons, text="出力結果確認",
+        self.editor_button = tk.Button(self.frame_buttons, text="確認フォーム",
                                        command=self.open_text_editor,
                                        width=self.button_width, height=self.button_height)
         self.editor_button.pack(side=tk.LEFT, padx=10)
@@ -155,7 +155,7 @@ class MedicalTextConverter:
         try:
             self.root.iconify()
             mouse_automation.main("soap_copy")
-            self.show_notification("SOAPコピー完了", timeout=2000)
+            self.root.deiconify()
         except Exception as e:
             messagebox.showerror("エラー", f"SOAPコピー中にエラーが発生しました: {e}")
 
