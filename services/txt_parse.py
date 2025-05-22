@@ -3,6 +3,35 @@ import os
 import re
 from io import StringIO
 from collections import defaultdict
+from datetime import datetime
+
+
+def convert_to_timestamp(date_str, time_str):
+    """
+    日付文字列（例：2025/04/16(水)）と時間文字列（例：09:22）を
+    ISO 8601形式のタイムスタンプ（例：2025-04-16T09:22:00Z）に変換
+    """
+    try:
+        # 日付から曜日部分を除去し、年月日を抽出
+        date_match = re.match(r"(\d{4})/(\d{2})/(\d{2})", date_str)
+        if not date_match:
+            return None
+
+        year, month, day = date_match.groups()
+
+        # 時間から時分を抽出
+        time_match = re.match(r"(\d{2}):(\d{2})", time_str)
+        if not time_match:
+            return None
+
+        hour, minute = time_match.groups()
+
+        # ISO 8601形式に変換
+        timestamp = f"{year}-{month}-{day}T{hour}:{minute}:00Z"
+
+        return timestamp
+    except Exception:
+        return None
 
 
 def process_record(current_record, content_buffer, records, new_record_data=None):
@@ -27,6 +56,7 @@ def group_records_by_datetime(records):
     同じdate、department、timeの記録をグループ化し、
     各SOAPセクションを別々のフィールドとして統合する
     F(フリー)とサ(サマリ)も独立したフィールドとして処理
+    日付と時間をISO 8601形式のタイムスタンプに変換
     """
     grouped = defaultdict(dict)
 
@@ -44,10 +74,11 @@ def group_records_by_datetime(records):
             soap_field = f"{soap_section}_content"
 
         # 基本情報を設定（まだ設定されていない場合）
-        if 'date' not in grouped[key]:
-            grouped[key]['date'] = record['date']
+        if 'timestamp' not in grouped[key]:
+            # 日付と時間をタイムスタンプに変換
+            timestamp = convert_to_timestamp(record['date'], record['time'])
+            grouped[key]['timestamp'] = timestamp
             grouped[key]['department'] = record['department']
-            grouped[key]['time'] = record['time']
 
         # SOAPコンテンツを追加
         content = record['content'].strip()
@@ -63,8 +94,8 @@ def group_records_by_datetime(records):
     # 辞書から配列に変換
     result = list(grouped.values())
 
-    # 日付と時間でソート
-    result.sort(key=lambda x: (x['date'], x['time']))
+    # タイムスタンプでソート
+    result.sort(key=lambda x: x['timestamp'] if x['timestamp'] else '')
 
     return result
 
