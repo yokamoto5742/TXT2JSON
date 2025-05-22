@@ -7,26 +7,19 @@ from datetime import datetime
 
 
 def convert_to_timestamp(date_str, time_str):
-    """
-    日付文字列（例：2025/04/16(水)）と時間文字列（例：09:22）を
-    ISO 8601形式のタイムスタンプ（例：2025-04-16T09:22:00Z）に変換
-    """
     try:
-        # 日付から曜日部分を除去し、年月日を抽出
         date_match = re.match(r"(\d{4})/(\d{2})/(\d{2})", date_str)
         if not date_match:
             return None
 
         year, month, day = date_match.groups()
 
-        # 時間から時分を抽出
         time_match = re.match(r"(\d{2}):(\d{2})", time_str)
         if not time_match:
             return None
 
         hour, minute = time_match.groups()
 
-        # ISO 8601形式に変換
         timestamp = f"{year}-{month}-{day}T{hour}:{minute}:00Z"
 
         return timestamp
@@ -52,63 +45,47 @@ def process_record(current_record, content_buffer, records, new_record_data=None
 
 
 def group_records_by_datetime(records):
-    """
-    同じdate、department、timeの記録をグループ化し、
-    各SOAPセクションを別々のフィールドとして統合する
-    F(フリー)とサ(サマリ)も独立したフィールドとして処理
-    日付と時間をISO 8601形式のタイムスタンプに変換
-    """
     grouped = defaultdict(dict)
 
     for record in records:
-        # グループ化のキーを作成
         key = (record['date'], record['department'], record['time'])
 
-        # SOAPセクションに応じてフィールド名を決定
         soap_section = record['soap_section']
-        if soap_section == 'F':
-            soap_field = 'F_content'
-        elif soap_section == 'サ':
-            soap_field = 'summary_content'
-        else:
-            soap_field = f"{soap_section}_content"
+        soap_mapping = {
+            'S': 'subject',
+            'O': 'object',
+            'A': 'assessment',
+            'P': 'plan',
+            'F': 'comment',
+            'サ': 'summary'
+        }
+        soap_field = soap_mapping.get(soap_section, f"{soap_section}_content")
 
-        # 基本情報を設定（まだ設定されていない場合）
         if 'timestamp' not in grouped[key]:
-            # 日付と時間をタイムスタンプに変換
             timestamp = convert_to_timestamp(record['date'], record['time'])
             grouped[key]['timestamp'] = timestamp
             grouped[key]['department'] = record['department']
 
-        # SOAPコンテンツを追加
         content = record['content'].strip()
         if soap_field in grouped[key]:
-            # 既に同じSOAPセクションが存在する場合
             existing_content = grouped[key][soap_field]
-            # 重複チェック: 同じ内容が既に含まれている場合は追加しない
             if content not in existing_content:
                 grouped[key][soap_field] += "\n" + content
         else:
             grouped[key][soap_field] = content
 
-    # 辞書から配列に変換
     result = list(grouped.values())
 
-    # タイムスタンプでソート
     result.sort(key=lambda x: x['timestamp'] if x['timestamp'] else '')
 
     return result
 
 
 def remove_duplicates(records):
-    """
-    完全に重複したレコードを除去する
-    """
     seen_records = set()
     unique_records = []
 
     for record in records:
-        # レコードを文字列として表現してハッシュ化可能にする
         record_str = json.dumps(record, sort_keys=True, ensure_ascii=False)
 
         if record_str not in seen_records:
@@ -156,7 +133,6 @@ def parse_medical_text(text):
 
     process_record(current_record, content_buffer, records)
 
-    # 従来の重複除去
     unique_records = []
     seen_keys = set()
 
@@ -167,10 +143,8 @@ def parse_medical_text(text):
             seen_keys.add(key)
             unique_records.append(record)
 
-    # 新機能: 同じdate、department、timeの記録をグループ化
     grouped_records = group_records_by_datetime(unique_records)
 
-    # 最終的な重複除去
     final_records = remove_duplicates(grouped_records)
 
     return final_records
