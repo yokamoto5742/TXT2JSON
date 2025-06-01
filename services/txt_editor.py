@@ -1,8 +1,8 @@
+import os
 import tempfile
 import tkinter as tk
-import os
 from datetime import datetime
-from tkinter import scrolledtext, messagebox
+from tkinter import messagebox, scrolledtext
 
 import pyperclip
 
@@ -14,8 +14,8 @@ class TextEditor:
         self.parent = parent
         self.config = load_config()
 
-        self.editor_width = self.config.getint('Appearance', 'editor_width', fallback=600)
-        self.editor_height = self.config.getint('Appearance', 'editor_height', fallback=600)
+        self.editor_width = self.config.getint('Appearance', 'editor_width', fallback=800)
+        self.editor_height = self.config.getint('Appearance', 'editor_height', fallback=800)
         self.editor_window_position = self.config.get('Appearance', 'editor_window_position', fallback='+10+10')
         self.font_size = self.config.getint('Appearance', 'text_area_font_size', fallback=11)
         self.font_name = self.config.get('Appearance', 'text_area_font_name', fallback='Yu Gothic UI')
@@ -25,7 +25,7 @@ class TextEditor:
         self.on_close = None
 
         self.window = tk.Toplevel(parent) if parent else tk.Tk()
-        self.window.title("確認フォーム")
+        self.window.title("確認画面")
         self.window.geometry(f"{self.editor_width}x{self.editor_height}{self.editor_window_position}")
         self.window.minsize(self.editor_width, self.editor_height)
 
@@ -129,8 +129,3 @@ class TextEditor:
     def run(self):
         if not self.parent:
             self.window.mainloop()
-
-
-if __name__ == "__main__":
-    editor = TextEditor()
-    editor.run()

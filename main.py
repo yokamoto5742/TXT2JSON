@@ -1,12 +1,12 @@
 import json
+import tkinter as tk
+from tkinter import messagebox, scrolledtext
 
 import pyperclip
-import tkinter as tk
-from tkinter import scrolledtext, messagebox
 
 from services import mouse_automation
-from services.txt_parse import parse_medical_text
 from services.txt_editor import TextEditor
+from services.txt_parse import parse_medical_text
 from utils.config_manager import load_config
 from version import VERSION
 
@@ -16,12 +16,11 @@ class MedicalTextConverter:
         self.root = root
         self.config = load_config()
 
-        self.window_width = self.config.getint('Appearance', 'window_width', fallback=1200)
+        self.window_width = self.config.getint('Appearance', 'window_width', fallback=1100)
         self.window_height = self.config.getint('Appearance', 'window_height', fallback=800)
         self.main_window_position = self.config.get('Appearance', 'main_window_position', fallback='+10+10')
         self.text_area_font_size = self.config.getint('Appearance', 'text_area_font_size', fallback=11)
         self.text_area_font_name = self.config.get('Appearance', 'text_area_font_name', fallback='Yu Gothic UI')
-        # ボタンサイズの設定を追加
         self.button_width = self.config.getint('Appearance', 'button_width', fallback=15)
         self.button_height = self.config.getint('Appearance', 'button_height', fallback=2)
 
@@ -47,7 +46,6 @@ class MedicalTextConverter:
                                                      font=(self.text_area_font_name, self.text_area_font_size))
         self.text_output.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        # 行数と文字数の表示
         self.frame_stats = tk.Frame(root)
         self.frame_stats.pack(fill=tk.X)
 
@@ -85,7 +83,7 @@ class MedicalTextConverter:
                                       width=self.button_width, height=self.button_height)
         self.clear_button.pack(side=tk.LEFT, padx=10)
 
-        self.editor_button = tk.Button(self.frame_buttons, text="確認フォーム",
+        self.editor_button = tk.Button(self.frame_buttons, text="確認画面",
                                        command=self.open_text_editor,
                                        width=self.button_width, height=self.button_height)
         self.editor_button.pack(side=tk.LEFT, padx=10)
@@ -206,7 +204,7 @@ class MedicalTextConverter:
             mouse_automation.main()
             self.show_notification("設定完了", timeout=2000)
         except Exception as e:
-            messagebox.showerror("エラー", f"マウス操作自動化の実行中にエラーが発生しました: {e}")
+            messagebox.showerror("エラー", f"マウス操作中にエラーが発生しました: {e}")
 
     def open_text_editor(self):
         self.set_monitoring_state(False)

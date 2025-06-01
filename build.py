@@ -1,6 +1,7 @@
-import subprocess
 import os
+import subprocess
 import shutil
+
 from version_manager import update_version, update_version_py
 
 
@@ -20,8 +21,8 @@ def build_executable():
     internal_dir = os.path.join(dist_dir, "_internal")
 
     shutil.copy("utils/config.ini", os.path.join(internal_dir, "config.ini"))
-    shutil.copy("utils/mouseoperation.txt", os.path.join(dist_dir, "mouseoperation.txt"))
-    shutil.copy("utils/soapcopy.txt", os.path.join(dist_dir, "soapcopy.txt"))
+    shutil.copy("C:\Shinseikai\TXT2JSON\mouseoperation.exe", os.path.join(dist_dir, "mouseoperation.exe"))
+    shutil.copy("C:\Shinseikai\TXT2JSON\soapcopy.exe", os.path.join(dist_dir, "soapcopy.exe"))
 
     print(f"Executable built successfully. Version: {new_version}")
 

@@ -1,9 +1,9 @@
 import json
 import os
 import re
-from io import StringIO
 from collections import defaultdict
 from datetime import datetime
+from io import StringIO
 
 
 def convert_to_timestamp(date_str, time_str):
@@ -59,7 +59,7 @@ def group_records_by_datetime(records):
             'F': 'comment',
             'サ': 'summary'
         }
-        soap_field = soap_mapping.get(soap_section, f"{soap_section}_content")
+        soap_field = soap_mapping.get(soap_section, f"{soap_section}")
 
         if 'timestamp' not in grouped[key]:
             timestamp = convert_to_timestamp(record['date'], record['time'])
